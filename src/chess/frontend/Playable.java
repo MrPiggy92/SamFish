@@ -11,16 +11,17 @@ public class Playable implements Frontend {
     boolean moved;
     String move;
     Logger logger;
-    public Playable (Logger prevLogger) {
+    public Playable (Logger prevLogger, Bot bot) {
         logger = prevLogger;
         logger.info("Playable frontend initialised.");
         System.out.print(" > ");
+        bot.move("a1a1");
     }
     public boolean run (Board board, Eval evaluator, boolean whitesTurn, Bot bot, String move, boolean debug) { // returns true for exit, false for continue
         moved = false;
-        board.move(move);
-        move = evaluator.findMove(board, whitesTurn, 2, null);
-        board.move(move);
+        bot.move(move);
+        move = evaluator.findMove(board, !whitesTurn, 2, null);
+        bot.move(move);
         logger.output(move);
 
         logger.output(board.toString());

@@ -23,7 +23,8 @@ public class UCI implements Frontend {
         } else if (parts[0].equals("isready")) {
             logger.output("readyok");
         } else if (parts[0].equals("ucinewgame")) {
-            logger.debug(board.toString());
+            //logger.debug(board.toString());
+            logger.debug(board.genFEN());
             logger.debug(board.kingSquare(whitesTurn));
             String kingPos = board.kingSquare(whitesTurn);
             try {
@@ -68,7 +69,8 @@ public class UCI implements Frontend {
             }
             logger.debug(board.genFEN());
         } else if (parts[0].equals("print")) {
-            logger.output(board.toString());
+            //logger.output(board.toString());
+            logger.output(board.genFEN());
         }
         System.out.println("");
         System.out.flush();

@@ -27,8 +27,8 @@ public class Bot {
             frontend = new UCI(logger);
             board = new Board(false, logger);
         } else {
-            frontend = new Playable(logger);
             board = new Board(true, logger);
+            frontend = new Playable(logger, this);
         }
         whitesTurn = true;
         debug = debugOn;
@@ -46,7 +46,10 @@ public class Bot {
         while (scanner.hasNextLine()) {
             input = scanner.nextLine();
             logger.input(input);
-            if (input.equals("quit") || input.equals("exit")) break;
+            if (input.equals("quit") || input.equals("exit")) {
+                logger.close();
+                break;
+            }
             if (frontend.run(board, evaluator, whitesTurn, this, input, debug)) {
                 break;
             }
