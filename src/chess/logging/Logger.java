@@ -38,12 +38,12 @@ public class Logger {
         debug = debugOn;
     }
     public void output(String msg) {
-        //System.out.println(msg);
-        System.out.println("[OUTPUT " + time(false) + "] " + msg);
+        System.out.println(msg);
+        //System.out.println("[OUTPUT " + time(false) + "] " + msg);
         write("[OUTPUT " + time(false) + "] " + msg);
     }
     public void input(String msg) {
-        System.out.println("[INPUT  " + time(false) + "] " + msg);
+        //System.out.println("[INPUT  " + time(false) + "] " + msg);
         write("[INPUT  " + time(false) + "] " + msg);
     }
     public void debug(String msg) {
@@ -111,6 +111,7 @@ public class Logger {
             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
             
             writer.close();
+            int counter = 0;
 
             for (File fileToZip : files) {
                 //System.out.println(fileToZip.getAbsolutePath());
@@ -121,7 +122,7 @@ public class Logger {
 
                 FileInputStream fis = new FileInputStream(fileToZip);
                 try {
-                    ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+                    ZipEntry zipEntry = new ZipEntry("game" + Integer.toString(counter) + ".log");
                     zipOut.putNextEntry(zipEntry);
 
                     byte[] buffer = new byte[1024];
@@ -133,6 +134,7 @@ public class Logger {
                 } finally {
                     fis.close();
                 }
+                counter ++;
             }
         } catch (IOException e) {
             System.err.println("Something went wrong");

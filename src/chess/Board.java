@@ -179,9 +179,17 @@ public class Board {
                 }
                 piece.newPos((move.charAt(2)+"")+(move.charAt(3)+""));
                 if (piece.value() == 1 && board[8-((int)move.charAt(3)-'0')][Arrays.binarySearch(Main.columnLetters, ""+move.charAt(2))] == null && move.charAt(0) != move.charAt(2)) {
-                    String takePos = new String(new char[]{move.charAt(1), move.charAt(3)});
+                    //logger.debug("En passant");
+                    String takePos = new String(new char[]{move.charAt(2), move.charAt(1)});
+                    //logger.debug("En passant");
                     int[] takeIndex = posToIndex(takePos);
+                    //logger.debug("En passant");
+                    //logger.debug(Integer.toString(takeIndex[0]));
+                    //logger.debug(Integer.toString(takeIndex[1]));
+                    //logger.debug(takePos);
+                    //logger.debug(Integer.toString(Arrays.binarySearch(Main.columnLetters, ""+takePos.charAt(0))));
                     board[takeIndex[0]][takeIndex[1]] = null;
+                    //logger.debug("En passant");
                     return;
                 }
                 board[8-((int)move.charAt(3)-'0')][Arrays.binarySearch(Main.columnLetters, ""+move.charAt(2))] = piece;

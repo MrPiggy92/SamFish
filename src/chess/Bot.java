@@ -1,4 +1,4 @@
-package chess;
+package chess; // TODO analyse /home/arco/Documents/Java/SamFish/logs/08-07-2025.20-19-21.zip_unzipped/SamFishLog7377929144654640718.log
 
 import chess.eval.Eval;
 import chess.logging.Logger;
