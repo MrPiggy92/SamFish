@@ -1,2 +1,2 @@
 #!/bin/bash
-exec java -cp ~/Documents/Java/SamFish/out/ chess.Main debug UCI ~/Documents/Java/SamFish/logs/
+exec java -cp ~/Documents/Java/SamFish/out/ chess.Main UCI debug ~/Documents/Java/SamFish/logs/ 2>/dev/tty
