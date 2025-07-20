@@ -236,79 +236,79 @@ public class Board {
       } */
       // /*
       Piece piece =
-            board[8 - ((int) move.charAt(1) - '0')][
-                Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))];
-        if (move.length() == 5) {
           board[8 - ((int) move.charAt(1) - '0')][
-                  Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))] =
-              null;
-          switch (move.charAt(4)) {
-            case 'q':
-              board[8 - ((int) move.charAt(3) - '0')][
-                      Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
-                  new Queen((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
-              break;
-            case 'r':
-              board[8 - ((int) move.charAt(3) - '0')][
-                      Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
-                  new Rook((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
-              break;
-            case 'b':
-              board[8 - ((int) move.charAt(3) - '0')][
-                      Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
-                  new Bishop((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
-              break;
-            case 'n':
-              board[8 - ((int) move.charAt(3) - '0')][
-                      Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
-                  new Knight((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
-              break;
-            default:
-              board[8 - ((int) move.charAt(3) - '0')][
-                      Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
-                  new Pawn((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
-              break;
-          }
-          return;
-        }
-        /*System.out.println(piece);
-        System.out.println(board[8 - ((int) move.charAt(1) - '0')][
-                Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))]);
-        System.out.println(8 - ((int) move.charAt(1) - '0'));
-        System.out.println(Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0)));
-        System.out.println(move);
-        System.out.println(board[8 - ((int) move.charAt(1) - '0')]);
-        for (Piece line : board[8 - ((int) move.charAt(1) - '0')]) {
-            System.out.println(line);
-        }
-        System.out.println(kingSquare(false));
-        System.out.println(this);*/
-        piece.newPos((move.charAt(2) + "") + (move.charAt(3) + ""));
-        if (piece.value() == 1
-            && board[8 - ((int) move.charAt(3) - '0')][
-                    Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))]
-                == null
-            && move.charAt(0) != move.charAt(2)) {
-          // logger.debug("En passant");
-          String takePos = new String(new char[] {move.charAt(2), move.charAt(1)});
-          // logger.debug("En passant");
-          int[] takeIndex = posToIndex(takePos);
-          // logger.debug("En passant");
-          // logger.debug(Integer.toString(takeIndex[0]));
-          // logger.debug(Integer.toString(takeIndex[1]));
-          // logger.debug(takePos);
-          // logger.debug(Integer.toString(Arrays.binarySearch(Main.columnLetters,
-          // ""+takePos.charAt(0))));
-          board[takeIndex[0]][takeIndex[1]] = null;
-          // logger.debug("En passant");
-          return;
-        }
-        board[8 - ((int) move.charAt(3) - '0')][
-                Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
-            piece;
+              Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))];
+      if (move.length() == 5) {
         board[8 - ((int) move.charAt(1) - '0')][
                 Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))] =
-            null; // */
+            null;
+        switch (move.charAt(4)) {
+          case 'q':
+            board[8 - ((int) move.charAt(3) - '0')][
+                    Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
+                new Queen((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
+            break;
+          case 'r':
+            board[8 - ((int) move.charAt(3) - '0')][
+                    Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
+                new Rook((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
+            break;
+          case 'b':
+            board[8 - ((int) move.charAt(3) - '0')][
+                    Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
+                new Bishop((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
+            break;
+          case 'n':
+            board[8 - ((int) move.charAt(3) - '0')][
+                    Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
+                new Knight((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
+            break;
+          default:
+            board[8 - ((int) move.charAt(3) - '0')][
+                    Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
+                new Pawn((move.charAt(2) + "") + (move.charAt(3) + ""), piece.isWhite());
+            break;
+        }
+        return;
+      }
+      /*System.out.println(piece);
+      System.out.println(board[8 - ((int) move.charAt(1) - '0')][
+              Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))]);
+      System.out.println(8 - ((int) move.charAt(1) - '0'));
+      System.out.println(Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0)));
+      System.out.println(move);
+      System.out.println(board[8 - ((int) move.charAt(1) - '0')]);
+      for (Piece line : board[8 - ((int) move.charAt(1) - '0')]) {
+          System.out.println(line);
+      }
+      System.out.println(kingSquare(false));
+      System.out.println(this);*/
+      piece.newPos((move.charAt(2) + "") + (move.charAt(3) + ""));
+      if (piece.value() == 1
+          && board[8 - ((int) move.charAt(3) - '0')][
+                  Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))]
+              == null
+          && move.charAt(0) != move.charAt(2)) {
+        // logger.debug("En passant");
+        String takePos = new String(new char[] {move.charAt(2), move.charAt(1)});
+        // logger.debug("En passant");
+        int[] takeIndex = posToIndex(takePos);
+        // logger.debug("En passant");
+        // logger.debug(Integer.toString(takeIndex[0]));
+        // logger.debug(Integer.toString(takeIndex[1]));
+        // logger.debug(takePos);
+        // logger.debug(Integer.toString(Arrays.binarySearch(Main.columnLetters,
+        // ""+takePos.charAt(0))));
+        board[takeIndex[0]][takeIndex[1]] = null;
+        // logger.debug("En passant");
+        return;
+      }
+      board[8 - ((int) move.charAt(3) - '0')][
+              Arrays.binarySearch(Main.columnLetters, "" + move.charAt(2))] =
+          piece;
+      board[8 - ((int) move.charAt(1) - '0')][
+              Arrays.binarySearch(Main.columnLetters, "" + move.charAt(0))] =
+          null; // */
     }
   }
 
@@ -344,7 +344,7 @@ public class Board {
     for (String oldMove : moves) {
       newBoard.move(oldMove);
     }
-    //System.out.println(move);
+    // System.out.println(move);
     newBoard.move(move);
     return newBoard;
   }
@@ -398,47 +398,52 @@ public class Board {
     if (blackKing) return 1;*/
     boolean escape = false;
     for (String move : nextPositions(whitesTurn, false)) {
-        Board nextBoard = newBoardWithmove(move);
-        boolean takenThisMove = false;
-        for (String nextMove : nextBoard.nextPositions(!whitesTurn, false)) {
-            try {
-                if (new String(new char[]{nextMove.charAt(2), nextMove.charAt(3)}).equals(nextBoard.kingSquare(whitesTurn))) {
-                    takenThisMove = true;
-                }
-            } catch (Exception e) {
-                //System.out.println("error");
-                //logger.warning(e.getMessage());
-            }
+      Board nextBoard = newBoardWithmove(move);
+      boolean takenThisMove = false;
+      for (String nextMove : nextBoard.nextPositions(!whitesTurn, false)) {
+        try {
+          if (new String(new char[] {nextMove.charAt(2), nextMove.charAt(3)})
+              .equals(nextBoard.kingSquare(whitesTurn))) {
+            takenThisMove = true;
+          }
+        } catch (Exception e) {
+          // System.out.println("error");
+          // logger.warning(e.getMessage());
         }
-        if (!takenThisMove) {
-            if (showReasons) logger.info(move);
-            escape = true;
-        }
+      }
+      if (!takenThisMove) {
+        if (showReasons) logger.info(move);
+        escape = true;
+      }
     }
     if (showReasons) logger.info(escape ? "can escape" : "can't escape");
     boolean check = false;
     for (String move : nextPositions(!whitesTurn, false)) {
-        try {
-            if (new String(new char[]{move.charAt(2), move.charAt(3)}).equals(kingSquare(whitesTurn))) check = true;
-        } catch (Exception e) {
-            //System.out.println(move);
-        }
+      try {
+        if (new String(new char[] {move.charAt(2), move.charAt(3)}).equals(kingSquare(whitesTurn)))
+          check = true;
+      } catch (Exception e) {
+        // System.out.println(move);
+      }
     }
     if (whitesTurn) {
-        if (!escape && check) return 1;
-        if (!escape) return -2;
+      if (!escape && check) return 1;
+      if (!escape) return -2;
     } else {
-        if (!escape && check) return 0;
-        if (!escape) return -2;
+      if (!escape && check) return 0;
+      if (!escape) return -2;
     }
     return -1;
   }
+
   public boolean check(boolean whitesTurn) {
     String kingPos = kingSquare(whitesTurn);
     for (String move : nextPositions(!whitesTurn, false)) {
-      //logger.info(move + " " + kingPos);
-      if (move != null && move.charAt(2) == kingPos.charAt(0) && move.charAt(3) == kingPos.charAt(1)) {
-        //logger.info("check");
+      // logger.info(move + " " + kingPos);
+      if (move != null
+          && move.charAt(2) == kingPos.charAt(0)
+          && move.charAt(3) == kingPos.charAt(1)) {
+        // logger.info("check");
         return true;
       }
     }
@@ -516,8 +521,8 @@ public class Board {
               board[i][j] = new Bishop(Main.columnLetters[j] + (8 - i), false);
               break;
             case 'n':
-              //Piece[] line = board[i];
-              //logger.debug(line[j].toString());
+              // Piece[] line = board[i];
+              // logger.debug(line[j].toString());
               board[i][j] = new Knight(Main.columnLetters[j] + (8 - i), false);
               break;
             case 'r':
@@ -550,11 +555,22 @@ public class Board {
             default:
               break;
           }
-          j ++;
+          j++;
         }
       }
       j = 0;
       i++;
     }
+  }
+  public ArrayList<Piece> getPieces () {
+    ArrayList<Piece> pieces = new ArrayList<Piece>();
+    for (int i = 0; i < 8; i ++) {
+      for (int j = 0; j < 8; j ++) {
+        if (board[i][j] != null) {
+          pieces.add(board[i][j]);
+        }
+      }
+    }
+    return pieces;
   }
 }

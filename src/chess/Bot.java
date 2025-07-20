@@ -24,7 +24,7 @@ public class Bot {
     loggerOutFile = outFile;
     useFormatting = !UCI;
     useUCI = UCI;
-    evaluator = new Eval(logger);
+    evaluator = new Eval(logger, this);
     if (UCI) {
       frontend = new UCI(logger);
       board = new Board(false, logger);
@@ -63,7 +63,8 @@ public class Bot {
       if (input.equals("quit") || input.equals("exit")) {
         logger.info(board.newBoardWithmove(lastMove).toString());
         logger.info(lastMove);
-        logger.info(Float.toString(evaluator.evaluate(board.newBoardWithmove(lastMove), whitesTurn)));
+        logger.info(
+            Float.toString(evaluator.evaluate(board.newBoardWithmove(lastMove), whitesTurn)));
         logger.info(Integer.toString(board.newBoardWithmove(lastMove).whiteWon(!whitesTurn, true)));
         logger.close();
         break;
@@ -77,5 +78,9 @@ public class Bot {
   public void loadFen(String position, boolean newWhitesTurn) {
     board.getFEN(position);
     whitesTurn = newWhitesTurn;
+  }
+
+  public boolean stopSearch() {
+    return frontend.stopSearch();
   }
 }

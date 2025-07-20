@@ -28,7 +28,7 @@ public class Playable implements Frontend {
       boolean debug) { // returns true for exit, false for continue
     moved = false;
     bot.move(move);
-    move = evaluator.findMove(board, !whitesTurn, 2, null, bot);
+    move = evaluator.findMove(board, !whitesTurn, 2, null, bot, null);
     bot.move(move);
     logger.output(move);
 
@@ -45,6 +45,10 @@ public class Playable implements Frontend {
       return true;
     }
     System.out.print(" > ");
+    return false;
+  }
+
+  public boolean stopSearch() {
     return false;
   }
 }

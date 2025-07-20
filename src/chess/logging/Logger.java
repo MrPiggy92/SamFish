@@ -22,8 +22,10 @@ public class Logger {
   ArrayList<File> files;
   boolean closed;
   boolean compressing;
+  boolean error;
 
   public Logger(String folderName, boolean debugOn, boolean compress) {
+    error = false;
     compressing = compress;
     if (compress) {
       logFolderPath = folderName;
@@ -38,8 +40,9 @@ public class Logger {
         writer = new FileWriter(tempFile);
         files.add(tempFile);
       } catch (IOException e) {
-        System.err.println("Something went wrong.");
-        System.err.println(e);
+        error = true;
+        fatal("Something went wrong.");
+        fatal(e.getMessage());
       }
     } else {
       try {
@@ -50,8 +53,9 @@ public class Logger {
         outFile.createNewFile();
         writer = new FileWriter(outFile);
       } catch (IOException e) {
-        System.err.println("Something went wrong.");
-        System.err.println(e);
+        error = true;
+        fatal("Something went wrong.");
+        fatal(e.getMessage());
       }
     }
     debug = debugOn;
@@ -65,8 +69,8 @@ public class Logger {
 
   public void input(String msg) {
     if (debug) {
-        // System.out.println("[INPUT  " + time(false) + "] " + msg);
-        write("[INPUT  " + time(false) + "] " + msg);
+      // System.out.println("[INPUT  " + time(false) + "] " + msg);
+      write("[INPUT  " + time(false) + "] " + msg);
     }
   }
 
@@ -79,22 +83,22 @@ public class Logger {
 
   public void info(String msg) {
     if (debug) {
-        System.out.println("[INFO " + time(false) + "] " + msg);
-        write("[INFO   " + time(false) + "] " + msg);
+      System.out.println("[INFO " + time(false) + "] " + msg);
+      write("[INFO   " + time(false) + "] " + msg);
     }
   }
 
   public void warning(String msg) {
     if (debug) {
-        System.out.println("[WARN " + time(false) + "] " + msg);
-        write("[WARN   " + time(false) + "] " + msg);
+      System.out.println("[WARN " + time(false) + "] " + msg);
+      write("[WARN   " + time(false) + "] " + msg);
     }
   }
 
   public void fatal(String msg) {
     if (debug) {
-        System.out.println("[ERROR " + time(false) + "] " + msg);
-        write("[ERROR  " + time(false) + "] " + msg);
+      System.out.println("[ERROR " + time(false) + "] " + msg);
+      write("[ERROR  " + time(false) + "] " + msg);
     }
   }
 
@@ -111,13 +115,15 @@ public class Logger {
   }
 
   private void write(String msg) {
+    if (error) return;
     try {
       writer.write(msg);
       writer.write("\n");
       writer.flush();
     } catch (IOException e) {
-      System.err.println("Something went wrong.");
-      System.err.println(e.getMessage());
+      error = true;
+      fatal("Something went wrong.");
+      fatal(e.getMessage());
     }
   }
 
@@ -139,8 +145,9 @@ public class Logger {
         writer = new FileWriter(tempFile);
         files.add(tempFile);
       } catch (IOException e) {
-        System.err.println("Something went wrong.");
-        System.err.println(e.getMessage());
+        error = true;
+        fatal("Something went wrong.");
+        fatal(e.getMessage());
       }
     } else {
       try {
@@ -150,8 +157,9 @@ public class Logger {
         outFile.createNewFile();
         writer = new FileWriter(outFile);
       } catch (IOException e) {
-        System.err.println("Something went wrong.");
-        System.err.println(e.getMessage());
+        error = true;
+        fatal("Something went wrong.");
+        fatal(e.getMessage());
       }
     }
   }
@@ -162,8 +170,9 @@ public class Logger {
       try {
         writer.close();
       } catch (IOException e) {
-        System.err.println("Something went wrong.");
-        System.err.println(e.getMessage());
+        error = true;
+        fatal("Something went wrong.");
+        fatal(e.getMessage());
       }
       closed = true;
       return;
@@ -200,8 +209,9 @@ public class Logger {
       }
       closed = true;
     } catch (IOException e) {
-      System.err.println("Something went wrong");
-      System.err.println(e.getMessage());
+      error = true;
+      fatal("Something went wrong");
+      fatal(e.getMessage());
     }
     // System.out.println("Wrote ZIP to: " + zipFilePath);
     // System.out.println("ZIP file size: " + zipFilePath.length());

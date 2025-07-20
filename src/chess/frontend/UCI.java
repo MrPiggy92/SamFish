@@ -10,6 +10,9 @@ public class UCI implements Frontend {
   String[] parts;
   String move;
   Logger logger;
+  Thread searchThread;
+  volatile boolean stopSearch;
+  String syzygyPath;
 
   public UCI(Logger prevLogger) {
     logger = prevLogger;
@@ -28,7 +31,7 @@ public class UCI implements Frontend {
       logger.output("id author Sam");
       logger.output("uciok");
     } else if (parts[0].equals("isready")) {
-      logger.output("readyok");
+      if ((searchThread != null && !searchThread.isAlive())) logger.output("readyok");
     } else if (parts[0].equals("ucinewgame")) {
       // logger.debug(board.toString());
       logger.debug(board.genFEN());
@@ -54,32 +57,40 @@ public class UCI implements Frontend {
       logger.debug(board.genFEN());
       bot.reset(true);
     } else if (parts[0].equals("go")) {
-      String bestmove = "";
-      if (parts[1].equals("movetime")) {
-        bestmove = evaluator.findMove(board, whitesTurn, null, Integer.parseInt(parts[2]), bot);
-      } else if (parts[1].equals("wtime")) {
-        if (whitesTurn) {
-          bestmove =
-              evaluator.findMove(
-                  board,
-                  whitesTurn,
-                  null,
-                  Integer.parseInt(parts[2]) / Integer.parseInt(parts[6]) - 10,
-                  bot);
-        } else {
-          bestmove =
-              evaluator.findMove(
-                  board,
-                  whitesTurn,
-                  null,
-                  Integer.parseInt(parts[4]) / Integer.parseInt(parts[6]) - 10,
-                  bot);
-        }
-      } else if (parts[1].equals("depth")) {
-        //System.out.println(board);
-        bestmove = evaluator.findMove(board, whitesTurn, Integer.parseInt(parts[2]), null, bot);
-      }
-      logger.output("bestmove " + bestmove);
+      stopSearch = false;
+      searchThread =
+          new Thread(
+              () -> {
+                String bestmove = "";
+                if (parts[1].equals("movetime")) {
+                  bestmove =
+                      evaluator.findMove(board, whitesTurn, null, Integer.parseInt(parts[2]), bot, syzygyPath);
+                } else if (parts[1].equals("wtime")) {
+                  if (whitesTurn) {
+                    bestmove =
+                        evaluator.findMove(
+                            board,
+                            whitesTurn,
+                            null,
+                            Integer.parseInt(parts[2]) / Integer.parseInt(parts[6]) - 10,
+                            bot, syzygyPath);
+                  } else {
+                    bestmove =
+                        evaluator.findMove(
+                            board,
+                            whitesTurn,
+                            null,
+                            Integer.parseInt(parts[4]) / Integer.parseInt(parts[6]) - 10,
+                            bot, syzygyPath);
+                  }
+                } else if (parts[1].equals("depth")) {
+                  // System.out.println(board);
+                  bestmove =
+                      evaluator.findMove(board, whitesTurn, Integer.parseInt(parts[2]), null, bot, syzygyPath);
+                }
+                logger.output("bestmove " + bestmove);
+              });
+      searchThread.start();
     } else if (parts[0].equals("position")) {
       bot.reset(false);
       if (parts.length > 2 && parts[1].equals("startpos")) {
@@ -103,11 +114,29 @@ public class UCI implements Frontend {
       logger.debug(board.genFEN());
     } else if (parts[0].equals("print")) {
       logger.output(board.toString());
-      //logger.output(board.genFEN());
+      // logger.output(board.genFEN());
+    } else if (parts[0].equals("stop")) {
+      logger.info("stopped");
+      stopSearch = true;
+      if (searchThread != null && searchThread.isAlive()) {
+        try {
+          searchThread.join();
+        } catch (InterruptedException e) {
+          logger.fatal(e.getMessage());
+        }
+      }
+    } else if (parts[0].equals("setoption")) {
+      if (parts[2].equals("SyzygyPath")) {
+        syzygyPath = parts[4];
+      }
     }
     System.out.println("");
     System.out.flush();
     return false;
+  }
+
+  public boolean stopSearch() {
+    return stopSearch;
   }
 }
 /*

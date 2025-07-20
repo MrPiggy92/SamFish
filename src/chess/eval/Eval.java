@@ -4,18 +4,22 @@ import chess.Board;
 import chess.Bot;
 import chess.logging.Logger;
 import chess.pieces.*;
+import chess.syzygy.Syzygy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Eval {
   Logger logger;
+  Bot bot;
+  Syzygy syzygyCalculator = new Syzygy();
 
-  public Eval(Logger prevLogger) {
+  public Eval(Logger prevLogger, Bot bot) {
     logger = prevLogger;
+    this.bot = bot;
   }
 
-  public float evaluate(Board board, boolean white/*boolean showReasons */) {
+  public float evaluate(Board board, boolean white /*boolean showReasons */) {
     float points = 0;
     if (white && board.whiteWon(!white, false) == 0) points += 50000;
     if (!white && board.whiteWon(!white, false) == 1) points += 50000;
@@ -87,6 +91,10 @@ public class Eval {
     float[] bestPoints = new float[] {-100000, -100000, -100000, -100000, -100000};
     ArrayList<String> skipped = new ArrayList<String>();
     for (String move : nextMoves) {
+      if (bot.stopSearch()) {
+        logger.info("stopping");
+        continue;
+      }
       String kingPos = board.kingSquare(white);
       boolean stop = false;
       for (String nextMove : board.newBoardWithmove(move).nextPositions(!white, false)) {
@@ -145,7 +153,7 @@ public class Eval {
     }
     for (String move : bestMoves) {
       if (skipped.contains(move)) {
-        logger.warning("info Failed to skip " + move);
+        logger.warning("Failed to skip " + move);
       }
     }
     int count = 0;
@@ -186,9 +194,18 @@ public class Eval {
     return positions;
   }
 
-  public String findMove(Board board, boolean white, Integer depth, Integer time, Bot bot) {
+  public String findMove(Board board, boolean white, Integer depth, Integer time, Bot bot, String syzygyPath) {
+    if (syzygyPath != null) {
+      syzygyCalculator.newPath(syzygyPath);
+      if (syzygyCalculator.newPos(board)) {
+        logger.debug("using syzygy");
+        return syzygyCalculator.bestmove();
+      } else {
+        logger.debug("not using syzygy");
+      }
+    }
     logger.output("Calculating...");
-    //System.out.println(board);
+    // System.out.println(board);
     ArrayList<HashMap<String, Board>> positions = new ArrayList<HashMap<String, Board>>();
     if (depth != null) {
       String[] nextMoves = board.nextPositions(white, false);
@@ -236,6 +253,7 @@ public class Eval {
                 move));
       }
     }
+    logger.info("found moves");
     HashMap<String, ArrayList<Board>> groupedPositions = new HashMap<String, ArrayList<Board>>();
     for (HashMap<String, Board> map : positions) {
       for (Map.Entry<String, Board> entry : map.entrySet()) {
@@ -244,6 +262,9 @@ public class Eval {
 
         groupedPositions.computeIfAbsent(key, _ -> new ArrayList<>()).add(newBoard);
       }
+    }
+    for (String move : groupedPositions.keySet()) {
+      logger.info("found move " + move);
     }
     // Now find best
     HashMap<String, Integer> movesWithPoints = new HashMap<String, Integer>();
@@ -257,7 +278,7 @@ public class Eval {
     String bestMove = "a1a1";
     int currentMax = -1000000000;
     for (String move : movesWithPoints.keySet()) {
-      //logger.info
+      // logger.info
       if (movesWithPoints.get(move) > currentMax) {
         bestMove = move;
         currentMax = movesWithPoints.get(move);
