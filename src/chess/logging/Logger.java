@@ -48,7 +48,9 @@ public class Logger {
       try {
         String fileName = time(true);
         outFolder = new File(folderName, fileName);
-        outFolder.mkdir();
+        while (!outFolder.mkdir()) {
+          outFolder = new File(outFolder.getAbsolutePath() + "2");
+        }
         outFile = new File(outFolder, fileName);
         outFile.createNewFile();
         writer = new FileWriter(outFile);

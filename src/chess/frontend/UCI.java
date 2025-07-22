@@ -31,7 +31,7 @@ public class UCI implements Frontend {
       logger.output("id author Sam");
       logger.output("uciok");
     } else if (parts[0].equals("isready")) {
-      if ((searchThread != null && !searchThread.isAlive())) logger.output("readyok");
+      if ((searchThread == null || !searchThread.isAlive())) logger.output("readyok");
     } else if (parts[0].equals("ucinewgame")) {
       // logger.debug(board.toString());
       logger.debug(board.genFEN());

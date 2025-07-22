@@ -109,7 +109,7 @@ public class Knight implements Piece {
   }
 
   public int value() {
-    return 3;
+    return 2;
   }
 
   public String getSquare() {

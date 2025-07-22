@@ -1,7 +1,8 @@
 # Install (once): pip install python-chess
 
 import chess
-import chess.syzygy
+#import syzygy2
+import chess.syzygy as syzygy2
 from typing import List, Tuple
 
 TB_PATHS = [
@@ -12,7 +13,7 @@ TB_PATHS = [
 
 def open_tablebase(paths):
     # Create empty tablebase manager, then add dirs (lets you add multiple roots).
-    tb = chess.syzygy.Tablebase()
+    tb = syzygy2.Tablebase()
     for p in paths:
         try:
             tb.add_directory(p)
@@ -20,7 +21,7 @@ def open_tablebase(paths):
             pass  # ignore missing paths
     return tb
 
-def classify_moves_with_wdl(tb: chess.syzygy.Tablebase, board: chess.Board) -> List[Tuple[chess.Move, int]]:
+def classify_moves_with_wdl(tb: syzygy2.Tablebase, board: chess.Board) -> List[Tuple[chess.Move, int]]:
     """Return list of (move, wdl_score) from side-to-move perspective."""
     results = []
     stm = board.turn  # True if White to move
@@ -52,13 +53,13 @@ def pick_best_moves(wdl_results: List[Tuple[chess.Move, int]]):
     best_moves = [m for m, s in filtered if s == best_score]
     return best_score, best_moves
 
-def optional_root_dtz(tb: chess.syzygy.Tablebase, board: chess.Board):
+def optional_root_dtz(tb: syzygy2.Tablebase, board: chess.Board):
     """Probe DTZ if available; may raise KeyError."""
     return tb.probe_dtz(board)
 
 if __name__ == "__main__":
     # Example: a known won KQ vs KR position (Black to move)
-    fen = "8/8/8/8/8/8/kq6/6KQ w - - 0 1"
+    fen = "2b1k3/3p4/8/8/8/8/8/4K2R w - - 0 1"
     board = chess.Board(fen)
 
     with open_tablebase(TB_PATHS) as tb:
@@ -83,6 +84,7 @@ if __name__ == "__main__":
 
         # Optional: refine with DTZ (if present) to pick fastest progress-to-zeroing line
         try:
+            print('\nhhhhhhhhhhhhhhhhhhhhhhhhhhh')
             dtz_here = optional_root_dtz(tb, board)
             print(f"DTZ value: {dtz_here} (plies to zeroing; sign encodes result class)")
         except KeyError:

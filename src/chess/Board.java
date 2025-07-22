@@ -84,7 +84,7 @@ public class Board {
 
   @Override
   public String toString() {
-    repr = "";
+    /*repr = "";
     repr += textBoard;
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
@@ -101,8 +101,27 @@ public class Board {
           repr = repr.replaceFirst("0", board[i][j].toString());
         }
       }
+    }*/
+    StringBuilder repr = new StringBuilder(); 
+    for (int i = 0; i < 8; i ++) {
+      repr.append(8-i);
+      repr.append(" ");
+      for (int j = 0; j < 8; j ++) {
+        if (board[i][j] == null) {
+          repr.append(".");
+        } else {
+          repr.append(board[i][j].toString());
+        }
+        repr.append(" ");
+      }
+      repr.append("\n");
     }
-    return repr;
+    repr.append("  ");
+    for (int i = 0; i < 8; i ++) {
+      repr.append(Main.columnLetters[i]);
+      repr.append(" ");
+    }
+    return repr.toString();
   }
 
   public void move(String move) {
@@ -479,7 +498,7 @@ public class Board {
       if (count > 0) {
         FEN += Integer.toString(count);
       }
-      FEN += "/";
+      if (i != 7) FEN += "/";
     }
     return FEN;
   }

@@ -3,17 +3,17 @@ package chess.syzygy;
 import chess.Board;
 import chess.pieces.*;
 
+import java.io.RandomAccessFile;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Syzygy {
     Board board;
     File tables;
-    File rtbw;
-    File rtbz;
+    RandomAccessFile rtbw;
+    RandomAccessFile rtbz;
     public boolean newPos(Board board) {
-        SyzygyWDLIndex indexer = new SyzygyWDLIndex();
-        indexer.main();
         if (board.getPieces().size() <= this.size()) {
             this.board = board;
             ArrayList<Piece> whitePieces = new ArrayList<Piece>();
@@ -92,8 +92,16 @@ public class Syzygy {
                 }
             }
             System.err.println(sb.toString());
-            rtbw = new File(tables, sb.toString()+".rtbw");
-            rtbz = new File(tables, sb.toString()+".rtbz");
+            try {
+                /*rtbw = new RandomAccessFile(tables.getAbsolutePath() + "/" + sb.toString()+".rtbw", "r");
+                rtbz = new RandomAccessFile(tables.getAbsolutePath() + "/" + sb.toString()+".rtbz", "r");*/
+                rtbw = new RandomAccessFile(tables.getAbsolutePath() + "/" + "KBPvKR"+".rtbw", "r");
+                rtbz = new RandomAccessFile(tables.getAbsolutePath() + "/" + "KBPvKR"+".rtbz", "r");
+            } catch (IOException e) {
+                System.err.println("Something went wrong");
+                System.err.println(e.getMessage());
+                return false;
+            }
             return true;
         }
         return false;
@@ -101,9 +109,11 @@ public class Syzygy {
     public void newPath(String path) {
         tables = new File(path);
     }
-    public String bestmove() {
-        System.err.println(rtbw.getAbsolutePath());
-        return "";
+    public String bestmove(boolean white) {
+        //System.err.println(rtbw.getAbsolutePath());
+        int value = WDLIndexer.probe(board.genFEN(), null, white);
+        return Integer.toString(value);
+        //return "";
     }
     private int size() {
         File[] files = this.tables.listFiles();

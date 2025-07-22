@@ -95,6 +95,14 @@ public class Eval {
         logger.info("stopping");
         continue;
       }
+      long timeElapsed = System.currentTimeMillis() - millis;
+        if ((time - timeElapsed <= 10) || System.currentTimeMillis() >= finTime) {
+          Board pos = board.newBoardWithmove(move);
+          HashMap<String, Board> toAdd = new HashMap<String, Board>();
+          toAdd.put(firstMove, pos);
+          positions.add(toAdd);
+          continue;
+        }
       String kingPos = board.kingSquare(white);
       boolean stop = false;
       for (String nextMove : board.newBoardWithmove(move).nextPositions(!white, false)) {
@@ -199,7 +207,7 @@ public class Eval {
       syzygyCalculator.newPath(syzygyPath);
       if (syzygyCalculator.newPos(board)) {
         logger.debug("using syzygy");
-        return syzygyCalculator.bestmove();
+        return syzygyCalculator.bestmove(white);
       } else {
         logger.debug("not using syzygy");
       }
@@ -263,9 +271,9 @@ public class Eval {
         groupedPositions.computeIfAbsent(key, _ -> new ArrayList<>()).add(newBoard);
       }
     }
-    for (String move : groupedPositions.keySet()) {
-      logger.info("found move " + move);
-    }
+    /*for (String move : groupedPositions.keySet()) {
+      logger.info("found move " + move + "(" + Integer.toString((int)evaluate(board.newBoardWithmove(move), white)) + ")");
+    }*/
     // Now find best
     HashMap<String, Integer> movesWithPoints = new HashMap<String, Integer>();
     for (String move : groupedPositions.keySet()) {
